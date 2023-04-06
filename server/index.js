@@ -1,9 +1,12 @@
 const express = require("express");
 const cors = require("cors"); // to connect client and server
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 const User = require("./models/User.js");
 require("dotenv").config();
 const app = express();
+
+const bcryptSalt = bcrypt.genSaltSync(10);
 
 app.use(express.json());
 app.use(
@@ -19,13 +22,19 @@ app.get("/test", (req, res) => {
   res.json("test ok");
 });
 
-app.post("/register", (req, res) => {
+app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
-  User.create({
-    name,
-    email,
-    password,
-  });
+
+  try {
+    const userDoc = await User.create({
+      name,
+      email,
+      password: bcrypt.hashSync(password, bcryptSalt),
+    });
+    res.json(userDoc);
+  } catch (error) {
+    res.status(400).json(error);
+  }
 });
 
 app.listen(5000, () => {
