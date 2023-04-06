@@ -33,7 +33,22 @@ app.post("/register", async (req, res) => {
     });
     res.json(userDoc);
   } catch (error) {
-    res.status(400).json(error);
+    res.status(422).json(error);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  const userDoc = await User.findOne({ email });
+  if (userDoc) {
+    const passOk = bcrypt.compareSync(password, userDoc.password); // check if (encrypted) password is same as password that user entered
+    if (passOk) {
+      res.json("pass ok");
+    } else {
+      res.status(422).json("pass not ok");
+    }
+  } else {
+    res.json("not found");
   }
 });
 
