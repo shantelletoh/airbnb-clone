@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors"); // to connect client and server
+const mongoose = require("mongoose");
+require("dotenv").config();
 const app = express();
 
 app.use(express.json());
@@ -9,6 +11,9 @@ app.use(
     origin: "http://127.0.0.1:5173",
   })
 );
+
+console.log(process.env.MONGO_URL);
+mongoose.connect(process.env.MONGO_URL);
 
 app.get("/test", (req, res) => {
   res.json("test ok");
