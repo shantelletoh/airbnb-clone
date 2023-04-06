@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
-    <header className="p-4 flex justify-between">
+    <header className="flex justify-between">
       {/* flex puts items on same line. justify-bet gives as much space between items as poss */}
       <a href="" className="flex items-center gap-1">
         <svg // https://heroicons.com/
