@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors"); // to connect client and server
 const mongoose = require("mongoose");
+const User = require("./models/User.js");
 require("dotenv").config();
 const app = express();
 
@@ -12,7 +13,6 @@ app.use(
   })
 );
 
-console.log(process.env.MONGO_URL);
 mongoose.connect(process.env.MONGO_URL);
 
 app.get("/test", (req, res) => {
@@ -21,7 +21,11 @@ app.get("/test", (req, res) => {
 
 app.post("/register", (req, res) => {
   const { name, email, password } = req.body;
-  res.json({ name, email, password });
+  User.create({
+    name,
+    email,
+    password,
+  });
 });
 
 app.listen(5000, () => {
