@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const User = require("./models/User.js");
 const cookieParser = require("cookie-parser");
 const imageDownloader = require("image-downloader");
+const multer = require("multer");
 require("dotenv").config();
 const app = express();
 
@@ -82,7 +83,7 @@ app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true);
 });
 
-console.log({ __dirname });
+// console.log({ __dirname });
 app.post("/upload-by-link", async (req, res) => {
   const { link } = req.body;
   const newName = "photo" + Date.now() + ".jpg";
@@ -91,6 +92,12 @@ app.post("/upload-by-link", async (req, res) => {
     dest: __dirname + "/uploads/" + newName, // safer to use full path (i.e. concat with __dirname)
   });
   res.json(newName);
+});
+
+const photosMiddleware = multer({ dest: "uploads/" });
+app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
+  // console.log(req.files);
+  res.json(req.files);
 });
 
 app.listen(5000, () => {

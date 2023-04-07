@@ -44,6 +44,28 @@ export default function PlacesPage() {
     setPhotoLink("");
   }
 
+  function uploadPhoto(e) {
+    const files = e.target.files; // target is the input
+    // console.log({ files });
+    const data = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      data.append("photos", files[i]);
+    }
+    axios
+      .post("/upload", data, {
+        headers: {
+          "Content-type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        const { data: filename } = response;
+        // console.log(filename);
+        setAddedPhotos((prev) => {
+          return [...prev, filename];
+        });
+      });
+  }
+
   return (
     <div>
       {action !== "new" && (
@@ -119,7 +141,13 @@ export default function PlacesPage() {
                     />
                   </div>
                 ))}
-              <button className="flex items-center gap-1 justify-center border bg-transparent rounded-2xl p-2 text-2xl text-gray-600">
+              <label className="cursor-pointer flex items-center gap-1 justify-center border bg-transparent rounded-2xl p-2 text-2xl text-gray-600">
+                <input
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={uploadPhoto}
+                />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -135,7 +163,7 @@ export default function PlacesPage() {
                   />
                 </svg>
                 Upload
-              </button>
+              </label>
             </div>
 
             {preInput("Description", "description of the place")}
