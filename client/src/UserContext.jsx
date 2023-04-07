@@ -8,7 +8,10 @@ export function UserContextProvider({ children }) {
   useEffect(() => {
     // if user is not empty, try to fetch info about user
     if (!user) {
-      axios.get("/profile");
+      const { data } = axios.get("/profile").then(({ data }) => {
+        // .then is alternative to await since useEffect doesn't support await
+        setUser(data);
+      });
     }
   }, []);
 
