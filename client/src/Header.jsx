@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "./UserContext";
 
 export default function Header() {
+  const { user } = useContext(UserContext);
+
   return (
     <header className="flex justify-between">
       {/* flex puts items on same line. justify-bet gives as much space between items as poss */}
@@ -87,6 +91,7 @@ export default function Header() {
             />
           </svg>
         </div>
+        {!!user && <div>{user.name}</div>} {/* !! converts user to a boolean */}
       </Link>
     </header>
   );

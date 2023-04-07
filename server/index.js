@@ -46,9 +46,11 @@ app.post("/login", async (req, res) => {
     if (passOk) {
       jwt.sign(
         { email: userDoc.email, id: userDoc._id },
-        process.env.JWT_SECRET, {}, (error, token) => {
+        process.env.JWT_SECRET,
+        {},
+        (error, token) => {
           if (error) throw error;
-          res.cookie("token", token).json("pass ok");
+          res.cookie("token", token).json(userDoc);
         }
       );
     } else {
@@ -57,6 +59,10 @@ app.post("/login", async (req, res) => {
   } else {
     res.json("not found");
   }
+});
+
+app.get("/profile", (req, res) => {
+  res.json("user info");
 });
 
 app.listen(5000, () => {
