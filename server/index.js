@@ -7,6 +7,7 @@ const User = require("./models/User.js");
 const cookieParser = require("cookie-parser");
 const imageDownloader = require("image-downloader");
 const multer = require("multer");
+const fs = require("fs"); // to rename files on the server
 require("dotenv").config();
 const app = express();
 
@@ -96,8 +97,18 @@ app.post("/upload-by-link", async (req, res) => {
 
 const photosMiddleware = multer({ dest: "uploads/" });
 app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
+  const uploadedFiles = [];
+  for (let i = 0; i < req.files.length; i++) {
+    const { path, originalname } = req.files[i];
+    // get extension in order to view file without downloading it
+    const parts = originalname.split("."); // array of every part of originalname split by periods
+    const extension = parts[parts.length - 1]; // get file extension (e.g. webp, png, etc.), which is the last element of the array parts
+    const newPath = path + "." + extension;
+    fs.renameSync(path, newPath);
+    uploadedFiles.push(newPath.replace("uploads/", "")); // .replace so url to photo is just path/filename
+  }
   // console.log(req.files);
-  res.json(req.files);
+  res.json(uploadedFiles);
 });
 
 app.listen(5000, () => {
