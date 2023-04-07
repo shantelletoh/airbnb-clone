@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors"); // to connect client and server
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const User = require("./models/User.js");
 require("dotenv").config();
 const app = express();
@@ -43,7 +44,13 @@ app.post("/login", async (req, res) => {
   if (userDoc) {
     const passOk = bcrypt.compareSync(password, userDoc.password); // check if (encrypted) password is same as password that user entered
     if (passOk) {
-      res.json("pass ok");
+      jwt.sign(
+        { email: userDoc.email, id: userDoc._id },
+        process.env.JWT_SECRET, {}, (error, token) => {
+          if (error) throw error;
+          res.cookie("token", token).json("pass ok");
+        }
+      );
     } else {
       res.status(422).json("pass not ok");
     }
