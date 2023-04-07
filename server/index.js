@@ -76,6 +76,10 @@ app.get("/profile", (req, res) => {
   }
 });
 
+app.post("/logout", (req, res) => {
+  res.cookie("token", "").json(true);
+});
+
 app.listen(5000, () => {
   console.log("Server running on port 5000");
 });
