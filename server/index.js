@@ -13,6 +13,7 @@ const bcryptSalt = bcrypt.genSaltSync(10);
 
 app.use(express.json());
 app.use(cookieParser());
+app.use("/uploads", express.static(__dirname + "/uploads")); // everything in uploads is displayed in the browser
 app.use(
   cors({
     credentials: true,
