@@ -160,6 +160,42 @@ app.get("/places/:id", async (req, res) => {
   res.json(await Place.findById(id));
 });
 
+// edit/update places
+app.put("/places", async (req, res) => {
+  const { token } = req.cookies;
+  const {
+    id,
+    title,
+    address,
+    addedPhotos,
+    description,
+    perks,
+    extraInfo,
+    checkIn,
+    checkOut,
+    maxGuests,
+  } = req.body;
+  jwt.verify(token, process.env.JWT_SECRET, {}, async (error, userData) => {
+    const placeDoc = await Place.findById(id);
+    if (userData.id === placeDoc.owner.toString()) {
+      // userData.id is a string, so need to convert placeDoc.owner to string to compare them
+      placeDoc.set({
+        title,
+        address,
+        photos: addedPhotos,
+        description,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+      });
+      await placeDoc.save();
+      res.json("ok");
+    }
+  });
+});
+
 app.listen(5000, () => {
   console.log("Server running on port 5000");
 });
