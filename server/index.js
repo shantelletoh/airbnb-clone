@@ -131,7 +131,7 @@ app.post("/places", (req, res) => {
       owner: userData.id,
       title,
       address,
-      addedPhotos,
+      photos: addedPhotos,
       description,
       perks,
       extraInfo,
@@ -140,6 +140,15 @@ app.post("/places", (req, res) => {
       maxGuests,
     });
     res.json(placeDoc);
+  });
+});
+
+app.get("/places", (req, res) => {
+  const { token } = req.cookies;
+  jwt.verify(token, process.env.JWT_SECRET, {}, async (error, userData) => {
+    // userData is the decrypted token
+    const { id } = userData;
+    res.json(await Place.find({ owner: id }));
   });
 });
 
