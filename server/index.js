@@ -143,6 +143,7 @@ app.post("/places", (req, res) => {
   });
 });
 
+// get all current user's places
 app.get("/places", (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, process.env.JWT_SECRET, {}, async (error, userData) => {
@@ -150,6 +151,13 @@ app.get("/places", (req, res) => {
     const { id } = userData;
     res.json(await Place.find({ owner: id }));
   });
+});
+
+// get place information
+app.get("/places/:id", async (req, res) => {
+  // res.json(req.params);
+  const { id } = req.params;
+  res.json(await Place.findById(id));
 });
 
 app.listen(5000, () => {
