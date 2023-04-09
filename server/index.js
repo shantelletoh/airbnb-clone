@@ -146,7 +146,7 @@ app.post("/places", (req, res) => {
 });
 
 // get all current user's places
-app.get("/places", (req, res) => {
+app.get("/user-places", (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, process.env.JWT_SECRET, {}, async (error, userData) => {
     // userData is the decrypted token
@@ -179,6 +179,7 @@ app.put("/places", async (req, res) => {
     price,
   } = req.body;
   jwt.verify(token, process.env.JWT_SECRET, {}, async (error, userData) => {
+    if (error) throw error;
     const placeDoc = await Place.findById(id);
     if (userData.id === placeDoc.owner.toString()) {
       // userData.id is a string, so need to convert placeDoc.owner to string to compare them
@@ -198,6 +199,11 @@ app.put("/places", async (req, res) => {
       res.json("ok");
     }
   });
+});
+
+// get all places
+app.get("/places", async (req, res) => {
+  res.json(await Place.find());
 });
 
 app.listen(5000, () => {
