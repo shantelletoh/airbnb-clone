@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import BookingWidget from "../BookingWidget";
 
 export default function PlacePage() {
   const { id } = useParams();
@@ -24,7 +25,7 @@ export default function PlacePage() {
         {/* position absolute enables scrolling to view all photos, inset-0 means stretch to top-left-bottom-right*/}
         <div className="bg-black p-8 grid gap-4">
           <div>
-            <h2 className="text-3xl">Photos of {place.title}</h2>
+            <h2 className="text-3xl mr-48">Photos of {place.title}</h2>
             <button
               onClick={() => setShowAllPhotos(false)}
               className="fixed right-12 top-8 flex gap-1 py-2 px-4 rounded-2xl shadow shadow-black bg-white text-black"
@@ -56,7 +57,7 @@ export default function PlacePage() {
   }
 
   return (
-    <div className="mt-4 bg-gray-100 -mx-8 px-8 py-8">
+    <div className="mt-4 bg-gray-100 -mx-8 px-8 pt-8">
       <h1 className="text-3xl">{place.title}</h1>
       <a
         className="flex gap-1 my-3 block font-semibold underline"
@@ -91,7 +92,8 @@ export default function PlacePage() {
             {place.photos?.[0] && (
               <div>
                 <img
-                  className="aspect-square object-cover"
+                  onClick={() => setShowAllPhotos(true)}
+                  className="aspect-square cursor-pointer object-cover"
                   src={"http://localhost:5000/uploads/" + place.photos[0]}
                   alt=""
                 />
@@ -101,8 +103,8 @@ export default function PlacePage() {
           <div className="grid">
             {place.photos?.[1] && (
               <img
-                aspect-square
-                object-cover
+                onClick={() => setShowAllPhotos(true)}
+                className="aspect-square cursor-pointer object-cover"
                 src={"http://localhost:5000/uploads/" + place.photos[1]}
                 alt=""
               />
@@ -110,10 +112,8 @@ export default function PlacePage() {
             <div className="overflow-hidden">
               {place.photos?.[2] && (
                 <img
-                  aspect-square
-                  object-cover
-                  relative
-                  top-2
+                  onClick={() => setShowAllPhotos(true)}
+                  className="aspect-square cursor-pointer object-cover relative top-2"
                   src={"http://localhost:5000/uploads/" + place.photos[2]}
                   alt=""
                 />
@@ -141,7 +141,7 @@ export default function PlacePage() {
         </button>
       </div>
 
-      <div className="mt-8 grid gap-8 grid-cols-1 md:grid-cols-[2fr_1fr]">
+      <div className="mt-8 mb-8 grid gap-8 grid-cols-1 md:grid-cols-[2fr_1fr]">
         <div>
           {/* Description */}
           <div className="my-4">
@@ -153,6 +153,18 @@ export default function PlacePage() {
           Check out: {place.checkOut}
           <br />
           Max number of guests: {place.maxGuests}
+        </div>
+
+        <div>
+          <BookingWidget place={place} />
+        </div>
+      </div>
+      <div className="bg-white -mx-8 px-8 py-8 border-t">
+        <div>
+          <h2 className="font-semibold text-2xl">Extra info</h2>
+        </div>
+        <div className="mb-4 mt-2 text-sm text-gray-700 leading-5">
+          {place.extraInfo}
         </div>
       </div>
     </div>
