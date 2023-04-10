@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import BookingWidget from "../BookingWidget";
 import PlaceGallery from "../PlaceGallery";
+import AddressLink from "../AddressLink";
 
 export default function PlacePage() {
   const { id } = useParams();
@@ -22,35 +23,9 @@ export default function PlacePage() {
   return (
     <div className="mt-4 bg-gray-100 -mx-8 px-8 pt-8">
       <h1 className="text-3xl">{place.title}</h1>
-      <a
-        className="flex gap-1 my-3 block font-semibold underline"
-        target="_blank"
-        href={"https://maps.google.com/?q=" + place.address}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
-          />
-        </svg>
-
-        {place.address}
-      </a>
+      <AddressLink>{place.address}</AddressLink>{" "}
+      {/* everything in this tag is a "child" of children, passed to AddressLink component*/}
       <PlaceGallery place={place} />
-
       <div className="mt-8 mb-8 grid gap-8 grid-cols-1 md:grid-cols-[2fr_1fr]">
         <div>
           {/* Description */}
