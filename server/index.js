@@ -121,7 +121,7 @@ app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
     const extension = parts[parts.length - 1]; // get file extension (e.g. webp, png, etc.), which is the last element of the array parts
     const newPath = path + "." + extension;
     fs.renameSync(path, newPath);
-    uploadedFiles.push(newPath.replace("uploads/", "")); // .replace so url to photo is just path/filename
+    uploadedFiles.push(newPath.replace("uploads\\", "")); // .replace so url to photo is just path/filename
   }
   // console.log(req.files);
   res.json(uploadedFiles);
