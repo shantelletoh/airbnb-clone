@@ -84,7 +84,15 @@ export default function Messenger() {
       </div>
 
       <div className="flex flex-col bg-blue-50 w-2/3 p-2">
-        <div className="flex-grow">messages with selected person</div>
+        <div className="flex-grow">
+          {!selectedUserId && (
+            <div className="flex h-full flex-grow items-center justify-center">
+              <div className="text-gray-400">
+                &larr; Select a person from the sidebar
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="flex gap-2">
           <input
