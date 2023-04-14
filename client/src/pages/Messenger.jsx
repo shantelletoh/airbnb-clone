@@ -4,6 +4,7 @@ import Avatar from "./Avatar";
 export default function Messenger() {
   const [ws, setWs] = useState(null);
   const [onlinePeople, setOnlinePeople] = useState({});
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:5000");
@@ -35,8 +36,8 @@ export default function Messenger() {
 
   return (
     <div className="flex h-screen">
-      <div className="bg-white w-1/3 pl-4 pt-4">
-        <div className="text-blue-500 font-bold flex gap-2 mb-4">
+      <div className="bg-white w-1/3">
+        <div className="text-blue-500 font-bold flex gap-2 p-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -49,7 +50,16 @@ export default function Messenger() {
           MernChat
         </div>
         {Object.keys(onlinePeople).map((userId) => (
-          <div className="border-b border-gray-100 py-2 flex items-center gap-2 cursor-pointer">
+          <div
+            onClick={() => {
+              setSelectedUserId(userId);
+              console.log(userId);
+            }}
+            className={
+              "border-b border-gray-100 py-2 pl-4 flex items-center gap-2 cursor-pointer " +
+              (userId === selectedUserId ? "bg-blue-50" : "")
+            }
+          >
             <Avatar username={onlinePeople[userId]} userId={userId} />
             <span className="text-gray-800">{onlinePeople[userId]}</span>
           </div>
