@@ -295,4 +295,15 @@ wss.on("connection", (connection, req) => {
       })
     );
   });
+
+  connection.on("message", (message) => {
+    const messageData = JSON.parse(message.toString());
+    // console.log(messageData);
+    const { recipient, text } = messageData;
+    if (recipient && text) {
+      [...wss.clients]
+        .filter((c) => c.id === recipient) // don't use find b/c it only finds one client. a user may be connected on multiple devices, so we want to find all of those connections
+        .forEach((c) => c.send(JSON.stringify({ text })));
+    }
+  });
 });
