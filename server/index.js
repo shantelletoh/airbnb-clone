@@ -272,12 +272,27 @@ wss.on("connection", (connection, req) => {
         jwt.verify(token, process.env.JWT_SECRET, {}, (error, userData) => {
           if (error) throw error;
           const { id, email } = userData;
-          console.log(id);
-          console.log(email);
+          // console.log(id);
+          // console.log(email);
           connection.id = id;
           connection.email = email;
         });
       }
     }
   }
+
+  // [...wss.clients].length // gives number of connections
+  // console.log([...wss.clients].map(c => c.username));
+
+  // get connected clients in string format
+  [...wss.clients].forEach((client) => {
+    client.send(
+      JSON.stringify({
+        online: [...wss.clients].map((c) => ({
+          id: c.id,
+          email: c.email,
+        })),
+      })
+    );
+  });
 });

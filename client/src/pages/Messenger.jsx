@@ -10,8 +10,24 @@ export default function Messenger() {
     ws.addEventListener("message", handleMessage);
   }, []);
 
+  function showOnlinePeople(peopleArray) {
+    // get unique connections since one client can make multiple connections (reload, etc)
+    const people = {};
+    peopleArray.forEach(({ id, email }) => {
+      people[id] = email;
+    });
+    console.log(people);
+  }
+
   function handleMessage(e) {
-    console.log("new message", e);
+    const messageData = JSON.parse(e.data);
+    console.log(messageData);
+    if ("online" in messageData) {
+      showOnlinePeople(messageData.online);
+    }
+    // e.data.text().then((messageString) => {
+    //   console.log(messageString);
+    // });
   }
 
   return (
