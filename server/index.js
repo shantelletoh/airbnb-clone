@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const User = require("./models/User.js");
 const Place = require("./models/Place.js");
 const Booking = require("./models/Booking.js");
+const Message = require("./models/Message.js");
 const ws = require("ws");
 const cookieParser = require("cookie-parser");
 const imageDownloader = require("image-downloader");
@@ -296,14 +297,28 @@ wss.on("connection", (connection, req) => {
     );
   });
 
-  connection.on("message", (message) => {
+  connection.on("message", async (message) => {
     const messageData = JSON.parse(message.toString());
     // console.log(messageData);
     const { recipient, text } = messageData;
     if (recipient && text) {
+      const messageDoc = await Message.create({
+        // create new message in database
+        sender: connection.id,
+        recipient,
+        text,
+      });
       [...wss.clients]
         .filter((c) => c.id === recipient) // don't use find b/c it only finds one client. a user may be connected on multiple devices, so we want to find all of those connections
-        .forEach((c) => c.send(JSON.stringify({ text })));
+        .forEach((c) =>
+          c.send(
+            JSON.stringify({
+              text,
+              sender: connection.id,
+              id: messageDoc._id,
+            })
+          )
+        );
     }
   });
 });
