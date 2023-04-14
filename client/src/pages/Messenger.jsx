@@ -3,6 +3,7 @@ import Avatar from "./Avatar";
 import Logo from "./Logo";
 import { UserContext } from "../UserContext";
 import { Navigate } from "react-router-dom";
+import { uniqBy } from "lodash";
 
 export default function Messenger() {
   const [ws, setWs] = useState(null);
@@ -44,10 +45,10 @@ export default function Messenger() {
 
   function handleMessage(e) {
     const messageData = JSON.parse(e.data);
-    console.log(messageData);
+    console.log({e, messageData});
     if ("online" in messageData) {
       showOnlinePeople(messageData.online);
-    } else {
+    } else if ("text" in messageData) {
       // console.log({ messageData });
 
       // display messages sent by other user
@@ -64,6 +65,8 @@ export default function Messenger() {
   // const onlinePeopleExcludingOurUser = onlinePeople.filter(p => p.username !== username) // can't use filter b/c it's an object, not array
   const onlinePeopleExclOurUser = { ...onlinePeople }; // make a copy of onlinePeople object
   delete onlinePeopleExclOurUser[user._id]; // delete our id from the array
+
+  const messagesWithoutDuplicates = uniqBy(messages, "id");
 
   function sendMessage(e) {
     e.preventDefault();
@@ -120,7 +123,7 @@ export default function Messenger() {
           {/* display all messages */}
           {!!selectedUserId && (
             <div>
-              {messages.map((message) => (
+              {messagesWithoutDuplicates.map((message) => (
                 <div>{message.text}</div>
               ))}
             </div>
