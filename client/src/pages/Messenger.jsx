@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import Logo from "./Logo";
+import { UserContext } from "../UserContext";
+import { Navigate } from "react-router-dom";
 
 export default function Messenger() {
   const [ws, setWs] = useState(null);
   const [onlinePeople, setOnlinePeople] = useState({});
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [redirect, setRedirect] = useState(null);
+  const { ready, user } = useContext(UserContext);
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:5000");
@@ -13,6 +17,18 @@ export default function Messenger() {
     // things that should happen when we receive a message
     ws.addEventListener("message", handleMessage);
   }, []);
+
+  if (!ready) {
+    return "Loading...";
+  }
+
+  if (ready && !user && !redirect) {
+    return <Navigate to={"/login"} />;
+  }
+
+  if (redirect) {
+    return <Navigate to={redirect} />;
+  }
 
   function showOnlinePeople(peopleArray) {
     // get unique connections since one client can make multiple connections (reload, etc)
@@ -35,11 +51,15 @@ export default function Messenger() {
     // });
   }
 
+  // const onlinePeopleExcludingOurUser = onlinePeople.filter(p => p.username !== username) // can't use filter b/c it's an object, not array
+  const onlinePeopleExclOurUser = { ...onlinePeople }; // make a copy of onlinePeople object
+  delete onlinePeopleExclOurUser[user._id]; // delete our id from the array
+
   return (
     <div className="flex h-screen">
       <div className="bg-white w-1/3">
         <Logo />
-        {Object.keys(onlinePeople).map((userId) => (
+        {Object.keys(onlinePeopleExclOurUser).map((userId) => (
           <div
             onClick={() => {
               setSelectedUserId(userId);
