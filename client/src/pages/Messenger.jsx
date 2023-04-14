@@ -49,9 +49,9 @@ export default function Messenger() {
           MernChat
         </div>
         {Object.keys(onlinePeople).map((userId) => (
-          <div className="border-b border-gray-100 py-2 flex items-center gap-2">
+          <div className="border-b border-gray-100 py-2 flex items-center gap-2 cursor-pointer">
             <Avatar username={onlinePeople[userId]} userId={userId} />
-            <span>{onlinePeople[userId]}</span>
+            <span className="text-gray-800">{onlinePeople[userId]}</span>
           </div>
         ))}
       </div>
