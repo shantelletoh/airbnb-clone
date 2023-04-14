@@ -10,6 +10,7 @@ export default function Messenger() {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [redirect, setRedirect] = useState(null);
   const [newMessageText, setNewMessageText] = useState("");
+  const [messages, setMessages] = useState([]);
   const { ready, user } = useContext(UserContext);
 
   useEffect(() => {
@@ -47,7 +48,13 @@ export default function Messenger() {
     if ("online" in messageData) {
       showOnlinePeople(messageData.online);
     } else {
-      console.log({ messageData });
+      // console.log({ messageData });
+
+      // display messages sent by other user
+      setMessages((prev) => [
+        ...prev,
+        { isOur: false, text: messageData.text },
+      ]);
     }
     // e.data.text().then((messageString) => {
     //   console.log(messageString);
@@ -66,6 +73,10 @@ export default function Messenger() {
         text: newMessageText,
       })
     );
+    setNewMessageText("");
+
+    // display messages sent by our user
+    setMessages((prev) => [...prev, { text: newMessageText, isOur: true }]);
   }
 
   return (
@@ -103,6 +114,15 @@ export default function Messenger() {
               <div className="text-gray-400">
                 &larr; Select a person from the sidebar
               </div>
+            </div>
+          )}
+
+          {/* display all messages */}
+          {!!selectedUserId && (
+            <div>
+              {messages.map((message) => (
+                <div>{message.text}</div>
+              ))}
             </div>
           )}
         </div>
