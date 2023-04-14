@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const User = require("./models/User.js");
 const Place = require("./models/Place.js");
 const Booking = require("./models/Booking.js");
+const ws = require("ws");
 const cookieParser = require("cookie-parser");
 const imageDownloader = require("image-downloader");
 const multer = require("multer");
@@ -249,6 +250,34 @@ app.get("/bookings", async (req, res) => {
   res.json(await Booking.find({ user: userData.id }).populate("place"));
 });
 
-app.listen(5000, () => {
+const server = app.listen(5000, () => {
   console.log("Server running on port 5000");
+});
+
+const wss = new ws.WebSocketServer({ server }); // create a WebSocket server
+wss.on("connection", (connection, req) => {
+  // connection is connection b/t our server and one specific connection client
+  // if u open the page, then u get connection to the server and this is the ws' connection to the client
+  console.log("wss connected");
+  // connection.send("hello"); // test receiving messages
+  // console.log(req.headers)
+  const cookies = req.headers.cookie;
+  if (cookies) {
+    const tokenCookieString = cookies
+      .split(";") // may have > 1 cookie, so split them by semicolons
+      .find((str) => str.startsWith("token=")); // only want the one starting with token=
+    if (tokenCookieString) {
+      const token = tokenCookieString.split("=")[1]; // only want the actual token, which is after the "="
+      if (token) {
+        jwt.verify(token, process.env.JWT_SECRET, {}, (error, userData) => {
+          if (error) throw error;
+          const { id, email } = userData;
+          console.log(id);
+          console.log(email);
+          connection.id = id;
+          connection.email = email;
+        });
+      }
+    }
+  }
 });

@@ -1,4 +1,19 @@
+import { useEffect, useState } from "react";
+
 export default function Messenger() {
+  const [ws, setWs] = useState(null);
+
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:5000");
+    setWs(ws);
+    // things that should happen when we receive a message
+    ws.addEventListener("message", handleMessage);
+  }, []);
+
+  function handleMessage(e) {
+    console.log("new message", e);
+  }
+
   return (
     <div className="flex h-screen">
       <div className="w-1/3">contacts</div>
