@@ -341,23 +341,26 @@ wss.on("connection", (connection, req) => {
     const messageData = JSON.parse(message.toString());
     // console.log(messageData);
     const { recipient, text, file } = messageData;
+    let filename = null;
     if (file) {
       // console.log({ file });
+      console.log("size", file.data.length);
       const parts = file.name.split(".");
       const extension = parts[parts.length - 1]; // get last part, which contains the file extension
-      const filename = Date.now() + "." + extension;
+      filename = Date.now() + "." + extension;
       const path = __dirname + "/uploads/" + filename;
-      const bufferData = new Buffer(file.data, "base64"); // read content from file.data, which is base64 encoded, so we need to decode it
+      const bufferData = new Buffer(file.data.split(",")[1], "base64"); // read content from file.data, which is base64 encoded, so we need to decode it
       fs.writeFile(path, bufferData, () => {
         console.log("file saved: " + path);
       });
     }
-    if (recipient && text) {
+    if (recipient && (text || file)) {
       const messageDoc = await Message.create({
         // create new message in database
         sender: connection.id,
         recipient,
         text,
+        file: file ? filename : null,
       });
       [...wss.clients]
         .filter((c) => c.id === recipient) // don't use find b/c it only finds one client. a user may be connected on multiple devices, so we want to find all of those connections
@@ -367,6 +370,7 @@ wss.on("connection", (connection, req) => {
               text,
               sender: connection.id,
               recipient,
+              file: file ? filename : null, // need this to work on firefox
               _id: messageDoc._id,
             })
           )
