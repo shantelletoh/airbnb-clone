@@ -315,7 +315,8 @@ wss.on("connection", (connection, req) => {
             JSON.stringify({
               text,
               sender: connection.id,
-              id: messageDoc._id,
+              recipient,
+              messageId: messageDoc._id,
             })
           )
         );
