@@ -342,7 +342,15 @@ wss.on("connection", (connection, req) => {
     // console.log(messageData);
     const { recipient, text, file } = messageData;
     if (file) {
-      console.log({ file });
+      // console.log({ file });
+      const parts = file.name.split(".");
+      const extension = parts[parts.length - 1]; // get last part, which contains the file extension
+      const filename = Date.now() + "." + extension;
+      const path = __dirname + "/uploads/" + filename;
+      const bufferData = new Buffer(file.data, "base64"); // read content from file.data, which is base64 encoded, so we need to decode it
+      fs.writeFile(path, bufferData, () => {
+        console.log("file saved: " + path);
+      });
     }
     if (recipient && text) {
       const messageDoc = await Message.create({
