@@ -57,7 +57,7 @@ app.get("/messages/:id", async (req, res) => {
   const messages = await Message.find({
     sender: { $in: [id, ourId] }, // sender is either is or the other user
     recipient: { $in: [id, ourId] },
-  }).sort({ createdAt: -1 }); // sort in descending order
+  }).sort({ createdAt: 1 }); // sort in descending order
   res.json(messages);
   console.log(messages);
 });
@@ -331,7 +331,7 @@ wss.on("connection", (connection, req) => {
               text,
               sender: connection.id,
               recipient,
-              messageId: messageDoc._id,
+              _id: messageDoc._id,
             })
           )
         );

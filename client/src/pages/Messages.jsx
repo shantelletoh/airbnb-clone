@@ -16,7 +16,7 @@ export default function Messages() {
 
   useEffect(() => {
     connectToWs();
-  }, [selectedUserId]);
+  }, []);
 
   function connectToWs() {
     const ws = new WebSocket("ws://localhost:5000");
@@ -30,20 +30,6 @@ export default function Messages() {
       }, 1000);
     });
   }
-
-  // auto scroll the conversation window
-  useEffect(() => {
-    const div = divUnderMessages.current;
-    if (div) {
-      div.scrollIntoView({ behavior: "smooth", block: "end" });
-    }
-  }, [messages]);
-
-  useEffect(() => {
-    if (selectedUserId) {
-      axios.get("/messages/" + selectedUserId);
-    }
-  }, [selectedUserId]);
 
   function showOnlinePeople(peopleArray) {
     // get unique connections since one client can make multiple connections (reload, etc)
@@ -77,7 +63,7 @@ export default function Messages() {
   const onlinePeopleExclOurUser = { ...onlinePeople }; // make a copy of onlinePeople object
   delete onlinePeopleExclOurUser[user._id]; // delete our id from the array
 
-  const messagesWithoutDuplicates = uniqBy(messages, "messageId");
+  const messagesWithoutDuplicates = uniqBy(messages, "_id");
 
   function sendMessage(e) {
     e.preventDefault();
@@ -96,10 +82,26 @@ export default function Messages() {
         text: newMessageText,
         sender: user._id,
         recipient: selectedUserId,
-        messageId: Date.now(),
+        _id: Date.now(),
       },
     ]);
   }
+
+  // auto scroll the conversation window
+  useEffect(() => {
+    const div = divUnderMessages.current;
+    if (div) {
+      div.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (selectedUserId) {
+      axios.get("/messages/" + selectedUserId).then((res) => {
+        setMessages(res.data);
+      });
+    }
+  }, [selectedUserId]);
 
   return (
     <div className="flex h-screen">
