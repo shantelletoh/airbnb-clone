@@ -66,12 +66,13 @@ export default function Messages() {
   const messagesWithoutDuplicates = uniqBy(messages, "_id");
 
   // send message in real time via WebSockets
-  function sendMessage(e) {
-    e.preventDefault();
+  function sendMessage(e, file = null) {
+    if (e) e.preventDefault();
     ws.send(
       JSON.stringify({
         recipient: selectedUserId,
         text: newMessageText,
+        file,
       })
     );
     setNewMessageText("");
@@ -86,6 +87,17 @@ export default function Messages() {
         _id: Date.now(),
       },
     ]);
+  }
+
+  function sendFile(e) {
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]); // return base 64 data, not binary data
+    reader.onload = () => {
+      sendMessage(null, {
+        name: e.target.files[0].name,
+        data: reader.result,
+      });
+    };
   }
 
   // auto scroll the conversation window
@@ -206,7 +218,7 @@ export default function Messages() {
 
             {/* upload attachment */}
             <label className="bg-blue-200 p-2 text-gray-600 cursor-pointer rounded-sm border border-blue-200">
-              <input type="file" className="hidden" />
+              <input type="file" className="hidden" onChange={sendFile} />
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
