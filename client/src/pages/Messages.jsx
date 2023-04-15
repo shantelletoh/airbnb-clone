@@ -115,25 +115,27 @@ export default function Messages() {
 
           {/* display all messages */}
           {!!selectedUserId && (
-            <div className="overflow-y-scroll">
-              {messagesWithoutDuplicates.map((message) => (
-                <div
-                  className={
-                    message.sender === user._id ? "text-right" : "text-left"
-                  }
-                >
+            <div className="relative h-full">
+              <div className="overflow-y-scroll absolute inset-0">
+                {messagesWithoutDuplicates.map((message) => (
                   <div
                     className={
-                      "text-left inline-block p-2 my-2 rounded-sm text-md " +
-                      (message.sender === user._id
-                        ? "bg-blue-500 text-white"
-                        : "bg-white text-gray-500")
+                      message.sender === user._id ? "text-right" : "text-left"
                     }
                   >
-                    {message.text}
+                    <div
+                      className={
+                        "text-left inline-block p-2 my-2 rounded-sm text-md " +
+                        (message.sender === user._id
+                          ? "bg-blue-500 text-white"
+                          : "bg-white text-gray-500")
+                      }
+                    >
+                      {message.text}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
         </div>
