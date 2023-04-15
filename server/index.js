@@ -277,6 +277,23 @@ const server = app.listen(5000, () => {
 
 const wss = new ws.WebSocketServer({ server }); // create a WebSocket server
 wss.on("connection", (connection, req) => {
+  function notifyAboutOnlinePeople() {
+    // [...wss.clients].length // gives number of connections
+    // console.log([...wss.clients].map(c => c.username));
+
+    // notify everyone about online people (when someone connects)
+    [...wss.clients].forEach((client) => {
+      client.send(
+        JSON.stringify({
+          online: [...wss.clients].map((c) => ({
+            id: c.id,
+            email: c.email,
+          })),
+        })
+      );
+    });
+  }
+
   connection.isAlive = true;
 
   connection.timer = setInterval(() => {
@@ -285,6 +302,7 @@ wss.on("connection", (connection, req) => {
       // if u don't get pong back in 1 sec, set isAlive to false
       connection.isAlive = false;
       connection.terminate();
+      notifyAboutOnlinePeople();
       console.log("dead");
     }, 1000);
   }, 5000);
@@ -318,21 +336,6 @@ wss.on("connection", (connection, req) => {
     }
   }
 
-  // [...wss.clients].length // gives number of connections
-  // console.log([...wss.clients].map(c => c.username));
-
-  // get connected clients in string format
-  [...wss.clients].forEach((client) => {
-    client.send(
-      JSON.stringify({
-        online: [...wss.clients].map((c) => ({
-          id: c.id,
-          email: c.email,
-        })),
-      })
-    );
-  });
-
   connection.on("message", async (message) => {
     const messageData = JSON.parse(message.toString());
     // console.log(messageData);
@@ -359,7 +362,5 @@ wss.on("connection", (connection, req) => {
     }
   });
 
-  wss.on("close", (data) => {
-    console.log("disconnected");
-  });
+  notifyAboutOnlinePeople();
 });
