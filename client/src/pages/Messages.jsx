@@ -123,7 +123,11 @@ export default function Messages() {
             )}
             {/* avatar and username */}
             <div className="flex gap-2 py-2 pl-4 items-center">
-              <Avatar username={onlinePeople[userId]} userId={userId} />
+              <Avatar
+                online={true}
+                username={onlinePeople[userId]}
+                userId={userId}
+              />
               <span className="text-gray-800">{onlinePeople[userId]}</span>
             </div>
           </div>
