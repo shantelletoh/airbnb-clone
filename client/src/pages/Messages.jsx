@@ -4,6 +4,7 @@ import Logo from "./Logo";
 import { uniqBy } from "lodash";
 import { UserContext } from "../UserContext";
 import axios from "axios";
+import Contact from "./Contact";
 
 export default function Messages() {
   const [ws, setWs] = useState(null);
@@ -127,30 +128,14 @@ export default function Messages() {
       <div className="bg-white w-1/3">
         <Logo />
         {Object.keys(onlinePeopleExclOurUser).map((userId) => (
-          <div
-            onClick={() => {
-              setSelectedUserId(userId);
-              // console.log(userId);
-            }}
-            className={
-              "border-b border-gray-100 flex items-center gap-2 cursor-pointer " +
-              (userId === selectedUserId ? "bg-blue-50" : "")
-            }
-          >
-            {/* blue bar on left of selected user*/}
-            {userId === selectedUserId && (
-              <div className="w-1 bg-blue-500 h-12 rounded-r-md"></div>
-            )}
-            {/* avatar and username */}
-            <div className="flex gap-2 py-2 pl-4 items-center">
-              <Avatar
-                online={true}
-                username={onlinePeople[userId]}
-                userId={userId}
-              />
-              <span className="text-gray-800">{onlinePeople[userId]}</span>
-            </div>
-          </div>
+          <Contact
+            key={userId}
+            id={userId}
+            online={true}
+            username={onlinePeopleExclOurUser[userId]}
+            onClick={() => setSelectedUserId(userId)}
+            selected={userId === selectedUserId}
+          />
         ))}
       </div>
 
