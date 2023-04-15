@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Avatar from "./Avatar";
 import Logo from "./Logo";
 import { uniqBy } from "lodash";
 import { UserContext } from "../UserContext";
+import axios from "axios";
 
 export default function Messages() {
   const [ws, setWs] = useState(null);
@@ -11,6 +12,7 @@ export default function Messages() {
   const [newMessageText, setNewMessageText] = useState("");
   const [messages, setMessages] = useState([]);
   const { user } = useContext(UserContext);
+  const divUnderMessages = useRef();
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:5000");
@@ -18,6 +20,20 @@ export default function Messages() {
     // things that should happen when we receive a message
     ws.addEventListener("message", handleMessage);
   }, []);
+
+  // auto scroll the conversation window
+  useEffect(() => {
+    const div = divUnderMessages.current;
+    if (div) {
+      div.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (selectedUserId) {
+      axios.get("/messages/" + selectedUserId);
+    }
+  }, [selectedUserId]);
 
   function showOnlinePeople(peopleArray) {
     // get unique connections since one client can make multiple connections (reload, etc)
@@ -116,7 +132,7 @@ export default function Messages() {
           {/* display all messages */}
           {!!selectedUserId && (
             <div className="relative h-full">
-              <div className="overflow-y-scroll absolute inset-0">
+              <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2">
                 {messagesWithoutDuplicates.map((message) => (
                   <div
                     className={
@@ -135,6 +151,7 @@ export default function Messages() {
                     </div>
                   </div>
                 ))}
+                <div ref={divUnderMessages}></div>
               </div>
             </div>
           )}

@@ -47,6 +47,21 @@ app.get("/test", (req, res) => {
   res.json("test ok");
 });
 
+// fetch all messages
+app.get("/messages/:id", async (req, res) => {
+  // res.json(req.params);
+  const { id } = req.params;
+  const userData = await getUserDataFromReq(req);
+  const ourId = userData.id;
+  console.log({ id, ourId });
+  const messages = await Message.find({
+    sender: { $in: [id, ourId] }, // sender is either is or the other user
+    recipient: { $in: [id, ourId] },
+  }).sort({ createdAt: -1 }); // sort in descending order
+  res.json(messages);
+  console.log(messages);
+});
+
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 
