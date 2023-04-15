@@ -15,11 +15,21 @@ export default function Messages() {
   const divUnderMessages = useRef();
 
   useEffect(() => {
+    connectToWs();
+  }, [selectedUserId]);
+
+  function connectToWs() {
     const ws = new WebSocket("ws://localhost:5000");
     setWs(ws);
     // things that should happen when we receive a message
     ws.addEventListener("message", handleMessage);
-  }, []);
+    ws.addEventListener("close", () => {
+      setTimeout(() => {
+        console.log("Disconnected. Trying to connect.");
+        connectToWs(); // auto-reconnect
+      }, 1000);
+    });
+  }
 
   // auto scroll the conversation window
   useEffect(() => {
