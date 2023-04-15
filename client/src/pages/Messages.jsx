@@ -127,12 +127,26 @@ export default function Messages() {
     <div className="flex h-screen">
       <div className="bg-white w-1/3">
         <Logo />
+
+        {/* display online contacts */}
         {Object.keys(onlinePeopleExclOurUser).map((userId) => (
           <Contact
             key={userId}
             id={userId}
             online={true}
             username={onlinePeopleExclOurUser[userId]}
+            onClick={() => setSelectedUserId(userId)}
+            selected={userId === selectedUserId}
+          />
+        ))}
+
+        {/* display offline contacts */}
+        {Object.keys(offlinePeople).map((userId) => (
+          <Contact
+            key={userId}
+            id={userId}
+            online={false}
+            username={offlinePeople[userId].name} // offlinePeople[userId] is the full object so need to add .username
             onClick={() => setSelectedUserId(userId)}
             selected={userId === selectedUserId}
           />
