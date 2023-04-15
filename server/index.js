@@ -67,7 +67,6 @@ app.get("/people", async (req, res) => {
   res.json(users);
 });
 
-
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -278,6 +277,22 @@ const server = app.listen(5000, () => {
 
 const wss = new ws.WebSocketServer({ server }); // create a WebSocket server
 wss.on("connection", (connection, req) => {
+  connection.isAlive = true;
+
+  connection.timer = setInterval(() => {
+    connection.ping();
+    connection.deathTimer = setTimeout(() => {
+      // if u don't get pong back in 1 sec, set isAlive to false
+      connection.isAlive = false;
+      connection.terminate();
+      console.log("dead");
+    }, 1000);
+  }, 5000);
+
+  connection.on("pong", () => {
+    clearTimeout(connection.deathTimer);
+  });
+
   // connection is connection b/t our server and one specific connection client
   // if u open the page, then u get connection to the server and this is the ws' connection to the client
   console.log("wss connected");
@@ -342,5 +357,9 @@ wss.on("connection", (connection, req) => {
           )
         );
     }
+  });
+
+  wss.on("close", (data) => {
+    console.log("disconnected");
   });
 });
