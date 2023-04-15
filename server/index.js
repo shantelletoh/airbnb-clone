@@ -62,6 +62,12 @@ app.get("/messages/:id", async (req, res) => {
   // console.log(messages);
 });
 
+app.get("/people", async (req, res) => {
+  const users = await User.find({}, { _id: true, name: true });
+  res.json(users);
+});
+
+
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 

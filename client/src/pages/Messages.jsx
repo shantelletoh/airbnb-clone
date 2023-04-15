@@ -8,6 +8,7 @@ import axios from "axios";
 export default function Messages() {
   const [ws, setWs] = useState(null);
   const [onlinePeople, setOnlinePeople] = useState({});
+  const [offlinePeople, setOfflinePeople] = useState({});
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [newMessageText, setNewMessageText] = useState("");
   const [messages, setMessages] = useState([]);
@@ -93,6 +94,25 @@ export default function Messages() {
       div.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, [messages]);
+
+  // get offline people
+  // this func runs every time onlinePeople changes, which changes every time we open the app
+  useEffect(() => {
+    axios.get("/people").then((res) => {
+      const offlinePeopleArr = res.data
+        .filter((p) => p._id !== user._id) // exclude our own user
+        .filter((p) => !Object.keys(onlinePeople).includes(p._id)); // exclude ids of onlinePeople
+      // .filter((p) => onlinePeople.map((op) => op._id).includes(p._id)); // can't do this b/c onlinePeople is an object
+
+      // convert offlinePeopleArr to offlinePeople object (just to make it an object like onlinePeople)
+      const offlinePeople = {};
+      offlinePeopleArr.forEach((p) => {
+        offlinePeople[p._id] = p;
+      });
+      console.log({ offlinePeople, offlinePeopleArr });
+      setOfflinePeople(offlinePeople);
+    });
+  }, [onlinePeople]);
 
   useEffect(() => {
     if (selectedUserId) {
