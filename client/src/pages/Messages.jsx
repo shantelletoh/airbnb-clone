@@ -51,8 +51,10 @@ export default function Messages() {
     } else if ("text" in messageData) {
       // console.log("sender: ");
       // console.log(user._id);
-      // display messages sent by other user
-      setMessages((prev) => [...prev, { ...messageData }]);
+      if (messageData.sender === selectedUserId) {
+        // display messages sent by other user
+        setMessages((prev) => [...prev, { ...messageData }]);
+      }
     }
     // e.data.text().then((messageString) => {
     //   console.log(messageString);
