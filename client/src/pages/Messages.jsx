@@ -16,7 +16,7 @@ export default function Messages() {
 
   useEffect(() => {
     connectToWs();
-  }, []);
+  }, [selectedUserId]);
 
   function connectToWs() {
     const ws = new WebSocket("ws://localhost:5000");
@@ -37,20 +37,18 @@ export default function Messages() {
     peopleArray.forEach(({ id, email }) => {
       people[id] = email;
     });
-    console.log(people);
+    // console.log(people);
     setOnlinePeople(people);
   }
 
   function handleMessage(e) {
     const messageData = JSON.parse(e.data);
-    console.log({ e, messageData });
+    // console.log({ e, messageData });
     if ("online" in messageData) {
       showOnlinePeople(messageData.online);
     } else if ("text" in messageData) {
-      // console.log({ messageData });
-
-      console.log("sender: ");
-      console.log(user._id);
+      // console.log("sender: ");
+      // console.log(user._id);
       // display messages sent by other user
       setMessages((prev) => [...prev, { ...messageData }]);
     }
@@ -65,6 +63,7 @@ export default function Messages() {
 
   const messagesWithoutDuplicates = uniqBy(messages, "_id");
 
+  // send message in real time via WebSockets
   function sendMessage(e) {
     e.preventDefault();
     ws.send(
@@ -111,7 +110,7 @@ export default function Messages() {
           <div
             onClick={() => {
               setSelectedUserId(userId);
-              console.log(userId);
+              // console.log(userId);
             }}
             className={
               "border-b border-gray-100 flex items-center gap-2 cursor-pointer " +
@@ -131,6 +130,7 @@ export default function Messages() {
         ))}
       </div>
 
+      {/* if no user is selected, display message to select a user*/}
       <div className="flex flex-col bg-blue-50 w-2/3 p-2">
         <div className="flex-grow">
           {!selectedUserId && (
@@ -141,12 +141,13 @@ export default function Messages() {
             </div>
           )}
 
-          {/* display all messages */}
+          {/* display all messages if a user is selected*/}
           {!!selectedUserId && (
             <div className="relative h-full">
               <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2">
                 {messagesWithoutDuplicates.map((message) => (
                   <div
+                    key={message._id}
                     className={
                       message.sender === user._id ? "text-right" : "text-left"
                     }
@@ -169,6 +170,7 @@ export default function Messages() {
           )}
         </div>
 
+        {/* display send message form if a user is selected*/}
         {!!selectedUserId && (
           <form className="flex gap-2" onSubmit={sendMessage}>
             <input
