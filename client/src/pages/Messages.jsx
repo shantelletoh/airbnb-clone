@@ -66,7 +66,12 @@ export default function Messages() {
     // display messages sent by our user
     setMessages((prev) => [
       ...prev,
-      { text: newMessageText, sender: user._id, recipient: selectedUserId },
+      {
+        text: newMessageText,
+        sender: user._id,
+        recipient: selectedUserId,
+        messageId: Date.now(),
+      },
     ]);
   }
 
