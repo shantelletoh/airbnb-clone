@@ -301,6 +301,7 @@ wss.on("connection", (connection, req) => {
     connection.deathTimer = setTimeout(() => {
       // if u don't get pong back in 1 sec, set isAlive to false
       connection.isAlive = false;
+      clearInterval(connection.timer);
       connection.terminate();
       notifyAboutOnlinePeople();
       console.log("dead");
