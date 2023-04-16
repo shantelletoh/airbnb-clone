@@ -1,15 +1,15 @@
-export default function PlaceImg({place, index=0, className=null}) {
+export default function PlaceImg({ place, index = 0, className = null }) {
   if (!place.photos?.length) {
-    return '';
+    return "";
   }
   if (!className) {
-    className="object-cover";
+    className = "object-cover";
   }
   return (
-                  <img
-                    className={className}
-                    src={"http://localhost:5000/uploads/" + place.photos[index]}
-                    alt=""
-                  />
-    )
+    <img
+      className={className}
+      src={"http://localhost:5000/uploads/" + place.photos[index]}
+      alt=""
+    />
+  );
 }
