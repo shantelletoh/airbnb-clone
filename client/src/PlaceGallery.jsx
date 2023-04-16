@@ -2,13 +2,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 // import SimpleImageSlider from "react-simple-image-slider";
 
 const slideStyles = {
-  width: "100%",
-  height: "100%",
-  maxWidth: "700px",
-  maxHeight: "500px",
+  // width: "100%",
+  // height: "100%",
+  width: "800px",
+  // maxHeight: "600px",
   borderRadius: "10px",
-  backgroundSize: "cover",
+  // backgroundSize: "contain",
+  backgroundColor: "gray",
   backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
+  display: "flex",
 };
 
 const rightArrowStyles = {
@@ -54,6 +57,17 @@ export default function PlaceGallery({ place }) {
   const [showFullImage, setShowFullImage] = useState(false);
   const [fullImageIndex, setFullImageIndex] = useState(-1);
 
+  // close image if press escape key
+  useEffect(() => {
+    const close = (e) => {
+      if (e.key === "Escape") {
+        setShowFullImage(false);
+      }
+    };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, [showFullImage]);
+
   function closeModal() {
     setShowFullImage(false);
   }
@@ -78,12 +92,12 @@ export default function PlaceGallery({ place }) {
   const getSlideStylesWithBackground = (slideIndex) => ({
     ...slideStyles,
     backgroundImage: `url(${slides[slideIndex].url})`,
-    width: `700px`,
+    width: `800px`,
   });
   const getSlidesContainerStylesWithWidth = () => ({
     ...slidesContainerStyles,
-    width: 700 * slides.length,
-    transform: `translateX(${-(currentIndex * 700)}px)`,
+    width: 800 * slides.length,
+    transform: `translateX(${-(currentIndex * 800)}px)`,
   });
 
   // useEffect(() => {
@@ -99,7 +113,7 @@ export default function PlaceGallery({ place }) {
 
   return (
     <div className="flex">
-      <div style={{ width: "700px", height: "500px", margin: "0 auto" }}>
+      <div style={{ width: "800px", height: "600px", margin: "0 auto" }}>
         <div className="h-full relative">
           <div>
             <div onClick={goToPrevious} style={leftArrowStyles}>
@@ -140,36 +154,47 @@ export default function PlaceGallery({ place }) {
 
       <div>
         {showFullImage ? (
-          <div
-            className="fixed top-0 bottom-0 left-0 right-0 bg-gray-600 bg-opacity-40 flex justify-center items-center z-20"
-            onClick={() => {
-              // close modal when outside of modal is clicked
-              setShowFullImage(false);
-            }}
-          >
+          <div className="w-5/6">
             <div
-              className="bg-white p-5"
-              onClick={(e) => {
-                // do not close modal if anything inside modal content is clicked
-                e.stopPropagation();
+              className="max-w-full fixed top-0 bottom-0 left-0 right-0 bg-gray-600 bg-opacity-40 flex justify-center items-center z-20"
+              onClick={() => {
+                // close modal when outside of modal is clicked
+                setShowFullImage(false);
               }}
             >
-              <button
-                onClick={() => {
-                  setShowFullImage(false);
+              <div
+                onClick={(e) => {
+                  // do not close modal if anything inside modal content is clicked
+                  e.stopPropagation();
                 }}
               >
-                Close
-              </button>
-              <img
-                src={
-                  "http://localhost:5000/uploads/" +
-                  place.photos[fullImageIndex]
-                }
-                alt=""
-              />
-              {/* <h1>Look! I'm inside the modal!</h1> */}
-              {/* {children} */}
+                <button
+                  className="bg-transparent"
+                  onClick={() => {
+                    setShowFullImage(false);
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-8 h-8"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+                <img
+                  src={
+                    "http://localhost:5000/uploads/" +
+                    place.photos[fullImageIndex]
+                  }
+                  alt=""
+                />
+              </div>
             </div>
           </div>
         ) : null}
