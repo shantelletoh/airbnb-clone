@@ -38,7 +38,7 @@ export default function PlaceGallery({ place }) {
 
   return (
     <>
-      <div className="max-w-[1400px] h-[700px] w-full m-auto py-16 px-4 relative group">
+      <div className="max-w-[1400px] h-[700px] w-full m-auto -mt-10 py-16 relative group">
         <div
           style={{ backgroundImage: `url(${slides[currentIndex].url})` }}
           className="w-full h-full rounded-2xl bg-center bg-cover cursor-pointer"
@@ -85,9 +85,9 @@ export default function PlaceGallery({ place }) {
               className="text-2xl cursor-pointer"
             >
               {currentIndex === slideIndex ? (
-                <div className="mt-2 mr-2 cursor-pointer w-3 h-3 rounded-full border border-gray-400"></div>
+                <div className="-mt-8 mr-2 cursor-pointer bg-white w-3 h-3 rounded-full border border-white"></div>
               ) : (
-                <div className="mt-2 mr-2 cursor-pointer w-3 h-3 bg-gray-400 rounded-full border border-gray-400"></div>
+                <div className="-mt-8 mr-2 cursor-pointer w-3 h-3 bg-gray-400 rounded-full border border-gray-400"></div>
               )}
             </div>
           ))}
