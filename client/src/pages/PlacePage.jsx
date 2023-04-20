@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import BookingWidget from "../BookingWidget";
 import PlaceGallery from "../PlaceGallery";
 import AddressLink from "../AddressLink";
+import { UserContext } from "../UserContext";
 
 export default function PlacePage() {
   const { id } = useParams();
   const [place, setPlace] = useState(null);
   const [messageSeller, setMessageSeller] = useState(false);
+  const [ws, setWs] = useState(null);
+  const [newMessageText, setNewMessageText] = useState("");
+  const [messageSent, setMessageSent] = useState(false);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     if (!id) {
@@ -19,7 +24,38 @@ export default function PlacePage() {
     });
   }, [id]);
 
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:5000");
+    setWs(ws);
+    // things that should happen when we receive a message
+    ws.addEventListener("message", handleMessage);
+  }, []);
+
   if (!place) return "";
+
+  function handleMessage(e) {
+    const messageData = JSON.parse(e.data);
+    console.log(messageData);
+    // if ("online" in messageData) {
+    //   showOnlinePeople(messageData.online);
+    // } else {
+    console.log({ messageData });
+    // }
+    // e.data.text().then((messageString) => {
+    //   console.log(messageString);
+    // });
+  }
+
+  // send message in real time via WebSockets
+  function sendMessage(e) {
+    e.preventDefault();
+    ws.send(
+      JSON.stringify({
+        recipient: place.owner,
+        text: newMessageText,
+      })
+    );
+  }
 
   return (
     <>
@@ -115,30 +151,45 @@ export default function PlacePage() {
                   </button>
                 </div>
                 {/*body*/}
-                <div className="relative flex-auto">
-                  <textarea
-                    className="text-slate-500 border-none focus:outline-none text-lg
+                <form onClick={sendMessage}>
+                  <div className="relative flex-auto">
+                    <textarea
+                      className="text-slate-500 border-none focus:outline-none text-lg
                     leading-relaxed"
-                    placeholder="Enter a message"
-                  ></textarea>
-                </div>
-                {/*footer*/}
-                <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
-                  <button
-                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button"
-                    onClick={() => setMessageSeller(false)}
-                  >
-                    Close
-                  </button>
-                  <button
-                    className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button"
-                    onClick={() => setMessageSeller(false)}
-                  >
-                    Save Changes
-                  </button>
-                </div>
+                      value={newMessageText}
+                      onChange={(e) => setNewMessageText(e.target.value)}
+                      placeholder="Enter a message"
+                    />
+                  </div>
+                  {/*footer*/}
+                  <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                    <button
+                      className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      type="button"
+                      onClick={() => setMessageSeller(false)}
+                    >
+                      Cancel
+                    </button>
+                    {newMessageText === "" ? (
+                      <div
+                        className="bg-emerald-300 cursor-not-allowed text-white font-bold uppercase text-sm px-6 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear"
+                      >
+                        Send Message
+                      </div>
+                    ) : (
+                      <button
+                        className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                        type="button"
+                        onClick={() => {
+                          setMessageSeller(false);
+                          setNewMessageText("");
+                        }}
+                      >
+                        Send Message
+                      </button>
+                    )}
+                  </div>
+                </form>
               </div>
             </div>
           </div>
