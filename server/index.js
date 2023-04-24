@@ -238,9 +238,32 @@ app.put("/places", async (req, res) => {
   });
 });
 
-// get all places
+// get all places with query and filter perks functionalities
 app.get("/places", async (req, res) => {
-  res.json(await Place.find());
+  try {
+    const search = req.query.search || "";
+    let perks = req.query.perks || "All";
+
+    const perkOptions = ["wifi", "parking", "tv", "radio", "pets", "entrance"];
+
+    perks === "All"
+      ? (perks = [...perkOptions])
+      : (perks = req.query.perks.split(","));
+
+    const places = await Place.find({
+      title: { $regex: search, $options: "i" },
+    })
+      .where("perks")
+      .in([...perks]);
+
+    const response = {
+      perksRes: perkOptions,
+      places,
+    };
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
 // book a place
