@@ -14,10 +14,10 @@ export default function LoginPage() {
     try {
       const { data } = await axios.post("/login", { email, password }); // alt way: response instead of {data}
       setUser(data); // alt way with response in above line: setUser(response.data);
-      alert("Login successful");
+      // alert("Login successful");
       setRedirect(true);
     } catch (error) {
-      alert("Login failed");
+      alert("Login failed. Please try again later.");
     }
   }
 
@@ -33,7 +33,7 @@ export default function LoginPage() {
         <form className="max-w-md mx-auto" onSubmit={handleLoginSubmit}>
           <input
             type="email"
-            placeholder={"your@gmail.com"}
+            placeholder={"your@email.com"}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -51,6 +51,17 @@ export default function LoginPage() {
             </Link>
           </div>
         </form>
+        <div>
+          <button
+            className="w-full mt-3 py-1 px-3 rounded-xl"
+            onClick={() => {
+              setEmail("guest@example.com");
+              setPassword("123456");
+            }}
+          >
+            Guest Login
+          </button>
+        </div>
       </div>
     </div>
   );

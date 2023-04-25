@@ -25,7 +25,7 @@ export default function Header() {
         </svg>
         <span className="font-bold text-2xl">airbnb</span>
       </Link>
-      <div class="flex items-center gap-3">
+      <div className="flex items-center gap-3">
         <Link to={"/messenger"} className="text-gray-500 hover:text-gray-600">
           <svg
             xmlns="http://www.w3.org/2000/svg"
