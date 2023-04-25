@@ -6,6 +6,7 @@ export default {
       colors: {
         // initialize own colors
         primary: "#F5385D",
+        primaryButton: "#F5385D",
       },
     },
   },

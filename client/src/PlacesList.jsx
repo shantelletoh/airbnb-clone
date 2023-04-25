@@ -15,8 +15,8 @@ export default function PlacesList({ places }) {
                 />
               )}
             </div>
-            <h2 className="font-bold">{place.address}</h2>
-            <h3 className="text-sm text-gray-500">{place.title}</h3>
+            <h2 className="font-bold">{place.title}</h2>
+            <h3 className="text-sm text-gray-500">{place.address}</h3>
             {/* <div>
               {place.perks.map((perk, index) => (
                 <p key={perk}>
