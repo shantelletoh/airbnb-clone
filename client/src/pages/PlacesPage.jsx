@@ -39,21 +39,27 @@ export default function PlacesPage() {
         </Link>
       </div>
       <div className="mt-4">
-        {places.length > 0 &&
+        {places.length > 0 ? (
           places.map((place) => (
             <Link
               to={"/account/places/" + place._id}
-              className="flex cursor-pointer gap-4 bg-gray-100 p-4 rounded-2xl"
+              className="mb-5 flex gap-4 bg-gray-200 rounded-md overflow-hidden"
             >
-              <div className="flex w-32 h-32 bg-gray-300 grow shrink-0">
-                <PlaceImg place={place} />
+              <div className="w-48 h-36 bg-cover">
+                <PlaceImg className="w-full h-full" place={place} />
               </div>
               <div className="grow-0 shrink">
-                <h2 className="text-xl">{place.title}</h2>
+                <h2 className="pt-2 text-xl font-semibold">{place.title}</h2>
+                <h2 className="">{place.address}</h2>
                 <p className="text-sm mt-2">{place.description}</p>
               </div>
             </Link>
-          ))}
+          ))
+        ) : (
+          <div className="text-center text-xl pt-7">
+            You have not hosted any vacation accommodations.
+          </div>
+        )}
       </div>
     </div>
   );

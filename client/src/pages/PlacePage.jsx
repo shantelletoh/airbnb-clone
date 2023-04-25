@@ -100,7 +100,7 @@ export default function PlacePage() {
       <footer className="bg-white fixed right-0 left-0 mr-auto ml-auto h-[70px] bottom-0">
         <div className="p-3 right-0 left-0 mr-auto ml-auto text-center text-2xl">
           <button
-            className="bg-pink-500 text-white hover:bg-pink-600 active:bg-pink font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+            className="bg-primaryButton text-white hover:bg-pink-600 active:bg-pink font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none mr-1 mb-1 ease-linear transition-all duration-150"
             type="button"
             onClick={() => setMessageSeller(true)}
           >
@@ -171,9 +171,7 @@ export default function PlacePage() {
                       Cancel
                     </button>
                     {newMessageText === "" ? (
-                      <div
-                        className="bg-emerald-300 cursor-not-allowed text-white font-bold uppercase text-sm px-6 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear"
-                      >
+                      <div className="bg-emerald-300 cursor-not-allowed text-white font-bold uppercase text-sm px-6 py-3 rounded shadow outline-none mr-1 mb-1 ease-linear">
                         Send Message
                       </div>
                     ) : (
