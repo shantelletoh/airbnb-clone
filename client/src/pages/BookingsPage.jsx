@@ -1,9 +1,9 @@
-import AccountNav from "../AccountNav";
+import AccountNav from "../Components/AccountNav";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import PlaceImg from "../PlaceImg";
+import PlaceImg from "../Components/PlaceImg";
 import { Link } from "react-router-dom";
-import BookingDates from "../BookingDates";
+import BookingDates from "../Components/BookingDates";
 
 export default function BookingsPage() {
   const [bookings, setBookings] = useState([]);
@@ -62,8 +62,10 @@ export default function BookingsPage() {
           <div className="text-center pt-7">
             <p className="text-xl">You have no bookings. </p>
             <p className="pt-5">
-              <Link className="underline font-bold">Click here</Link> to find
-              your perfect stay today!
+              <Link className="underline font-bold" to="/">
+                Click here
+              </Link>{" "}
+              to find your perfect stay today!
             </p>
           </div>
         )}

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { differenceInCalendarDays } from "date-fns";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../UserContext";
 
 export default function BookingWidget({ place }) {
   const [checkIn, setCheckIn] = useState("");

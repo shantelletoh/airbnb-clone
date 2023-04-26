@@ -131,7 +131,7 @@ export default function Messages() {
       offlinePeopleArr.forEach((p) => {
         offlinePeople[p._id] = p;
       });
-      console.log({ offlinePeople, offlinePeopleArr });
+      // console.log({ offlinePeople, offlinePeopleArr });
       setOfflinePeople(offlinePeople);
     });
   }, [onlinePeople]);

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import AccountNav from "../AccountNav";
+import AccountNav from "../Components/AccountNav";
 import axios from "axios";
-import PlaceImg from "../PlaceImg";
+import PlaceImg from "../Components/PlaceImg";
 
 export default function PlacesPage() {
   const [places, setPlaces] = useState([]);
@@ -42,6 +42,7 @@ export default function PlacesPage() {
         {places.length > 0 ? (
           places.map((place) => (
             <Link
+              key={place._id}
               to={"/account/places/" + place._id}
               className="mb-5 flex gap-4 bg-gray-200 rounded-md overflow-hidden"
             >

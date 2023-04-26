@@ -1,10 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import BookingWidget from "../BookingWidget";
-import PlaceGallery from "../PlaceGallery";
-import AddressLink from "../AddressLink";
-import { UserContext } from "../UserContext";
+import BookingWidget from "../Components/BookingWidget";
+import PlaceGallery from "../Components/PlaceGallery";
+import AddressLink from "../Components/AddressLink";
 
 export default function PlacePage() {
   const { id } = useParams();
@@ -12,8 +11,6 @@ export default function PlacePage() {
   const [messageSeller, setMessageSeller] = useState(false);
   const [ws, setWs] = useState(null);
   const [newMessageText, setNewMessageText] = useState("");
-  const [messageSent, setMessageSent] = useState(false);
-  const { user } = useContext(UserContext);
 
   useEffect(() => {
     if (!id) {
@@ -35,11 +32,11 @@ export default function PlacePage() {
 
   function handleMessage(e) {
     const messageData = JSON.parse(e.data);
-    console.log(messageData);
+    // console.log(messageData);
     // if ("online" in messageData) {
     //   showOnlinePeople(messageData.online);
     // } else {
-    console.log({ messageData });
+    // console.log({ messageData });
     // }
     // e.data.text().then((messageString) => {
     //   console.log(messageString);

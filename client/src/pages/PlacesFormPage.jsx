@@ -1,6 +1,6 @@
-import AccountNav from "../AccountNav";
-import Perks from "../Perks";
-import PhotosUploader from "../PhotosUploader";
+import AccountNav from "../Components/AccountNav";
+import Perks from "../Components/Perks";
+import PhotosUploader from "../Components/PhotosUploader";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Navigate, useParams } from "react-router-dom";

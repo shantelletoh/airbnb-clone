@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Sidebar from "../Sidebar";
+// import Sidebar from "../Sidebar";
 import SearchPlaces from "../Components/Home/SearchPlaces";
 import PlacesList from "../Components/Home/PlacesList";
 import PerksFilter from "../Components/Home/PerksFilter";
