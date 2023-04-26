@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { Navigate } from "react-router-dom";
-import Messages from "./Messages";
+import Messages from "../Components/Messenger/Messages";
 
 export default function Messenger() {
   const [redirect, setRedirect] = useState(null);

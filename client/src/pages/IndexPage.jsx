@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Sidebar from "../Sidebar";
-import SearchPlaces from "../SearchPlaces";
-import PlacesList from "../PlacesList";
-import PerksFilter from "../PerksFilter";
+import SearchPlaces from "../Components/Home/SearchPlaces";
+import PlacesList from "../Components/Home/PlacesList";
+import PerksFilter from "../Components/Home/PerksFilter";
 
 export default function IndexPage() {
   const [object, setObject] = useState({});
