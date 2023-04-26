@@ -39,7 +39,7 @@ export default function PlacesFormPage() {
   }, [id]);
 
   function inputHeader(text) {
-    return <h2 className="text-2xl mt-4">{text}</h2>;
+    return <h2 className="text-2xl mt-6 mb-1">{text}</h2>;
   }
 
   function inputDescription(text) {
@@ -92,10 +92,7 @@ export default function PlacesFormPage() {
     <div>
       <AccountNav />
       <form onSubmit={savePlace}>
-        {preInput(
-          "Title",
-          "Title for your place. Should be short and catchy, like an ad."
-        )}
+        {preInput("Title", "")}
         <input
           type="text"
           value={title}
@@ -103,7 +100,7 @@ export default function PlacesFormPage() {
           placeholder="title, for example: My lovely apartment"
         />
 
-        {preInput("Address", "Address for your place.")}
+        {preInput("Address", "")}
         <input
           type="text"
           value={address}
@@ -111,30 +108,27 @@ export default function PlacesFormPage() {
           placeholder="address"
         />
 
-        {preInput("Photos", "more = better")}
+        {preInput("Photos", "Add via link and/or upload from device")}
         <PhotosUploader addedPhotos={addedPhotos} onChange={setAddedPhotos} />
 
-        {preInput("Description", "description of the place")}
+        {preInput("Description", "")}
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        {preInput("Perks", "select all the perks of your place")}
+        {preInput("Perks", "Select all the perks of your place")}
         <div className="grid mt-2 gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           <Perks selected={perks} onChange={setPerks} />
         </div>
 
-        {preInput("Extra info", "house rules, etc.")}
+        {preInput("Extra Info", "")}
         <textarea
           value={extraInfo}
           onChange={(e) => setExtraInfo(e.target.value)}
         />
 
-        {preInput(
-          "Check in&out times, max guests",
-          "add check in and out times, remember to have some time window for cleaning the room between guests"
-        )}
+        {preInput("Logistics and Pricing", "")}
         <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
           <div>
             <h3 className="mt-2 -mb-1">Check in time</h3>
