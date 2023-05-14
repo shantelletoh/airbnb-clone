@@ -14,6 +14,13 @@ const multer = require("multer");
 const fs = require("fs"); // to rename files on the server
 require("dotenv").config();
 const app = express();
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const bcryptSalt = bcrypt.genSaltSync(10);
 
@@ -122,31 +129,46 @@ app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true);
 });
 
-// console.log({ __dirname });
-app.post("/upload-by-link", async (req, res) => {
-  const { link } = req.body;
-  const newName = "photo" + Date.now() + ".jpg";
-  await imageDownloader.image({
-    url: link,
-    dest: __dirname + "/uploads/" + newName, // safer to use full path (i.e. concat with __dirname)
+const cloudinaryImageUploadMethod = async (file) => {
+  return new Promise((resolve) => {
+    cloudinary.uploader.upload(file, (err, res) => {
+      if (err) return res.status(500).send("upload image error");
+      resolve(res.secure_url);
+    });
   });
-  res.json(newName);
+};
+
+app.post("/upload-by-link", async (req, res) => {
+  try {
+    const { link } = req.body;
+    const newName = "photo" + Date.now() + ".jpg";
+    await imageDownloader.image({
+      url: link,
+      dest: __dirname + "/tmp/" + newName, // safer to use full path (i.e. concat with __dirname)
+    });
+    const url = await cloudinaryImageUploadMethod(
+      __dirname + "/tmp/" + newName
+    );
+    // console.log(url);
+    res.json(url);
+  } catch (error) {
+    res.status(500).send("invalid image url");
+  }
 });
 
-const photosMiddleware = multer({ dest: "uploads/" });
-app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
+const photosMiddleware = multer({ dest: "tmp/" });
+app.post("/upload", photosMiddleware.array("photos", 10), async (req, res) => {
   const uploadedFiles = [];
   for (let i = 0; i < req.files.length; i++) {
-    const { path, originalname } = req.files[i];
-    // get extension in order to view file without downloading it
-    const parts = originalname.split("."); // array of every part of originalname split by periods
-    const extension = parts[parts.length - 1]; // get file extension (e.g. webp, png, etc.), which is the last element of the array parts
-    const newPath = path + "." + extension;
-    fs.renameSync(path, newPath);
-    uploadedFiles.push(newPath.replace("uploads\\", "")); // .replace so url to photo is just path/filename
+    const { path } = req.files[i];
+    // console.log(path);
+    const url = await cloudinaryImageUploadMethod(path);
+
+    uploadedFiles.push(url);
   }
   // console.log(req.files);
   res.json(uploadedFiles);
+  // console.log(uploadedFiles);
 });
 
 app.post("/places", (req, res) => {

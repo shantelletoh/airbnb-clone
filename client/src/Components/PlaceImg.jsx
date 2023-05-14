@@ -8,7 +8,11 @@ export default function PlaceImg({ place, index = 0, className = null }) {
   return (
     <img
       className={className}
-      src={"http://localhost:5000/uploads/" + place.photos[index]}
+      src={
+        place.photos[index] && place.photos[index].includes("https://")
+          ? place.photos[index]
+          : "http://localhost:5000/uploads/" + place.photos[index]
+      }
       alt=""
     />
   );

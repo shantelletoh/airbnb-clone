@@ -2,7 +2,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function PlaceGallery({ place }) {
   const slides = place.photos.map((photo) => ({
-    url: "http://localhost:5000/uploads/" + photo,
+    url:
+      photo && photo.includes("https://")
+        ? photo
+        : "http://localhost:5000/uploads/" + photo,
   }));
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -132,8 +135,11 @@ export default function PlaceGallery({ place }) {
                     e.stopPropagation();
                   }}
                   src={
-                    "http://localhost:5000/uploads/" +
-                    place.photos[fullImageIndex]
+                    place.photos[fullImageIndex] &&
+                    place.photos[fullImageIndex].includes("https://")
+                      ? place.photos[fullImageIndex]
+                      : "http://localhost:5000/uploads/" +
+                        place.photos[fullImageIndex]
                   }
                   alt=""
                 />

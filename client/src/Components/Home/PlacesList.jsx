@@ -10,7 +10,11 @@ export default function PlacesList({ places }) {
               {place.photos?.[0] && (
                 <img
                   className="rounded-2xl object-cover aspect-square"
-                  src={"http://localhost:5000/uploads/" + place.photos?.[0]}
+                  src={
+                    place.photos?.[0] && place.photos?.[0].includes("https://")
+                      ? place.photos?.[0]
+                      : "http://localhost:5000/uploads/" + place.photos?.[0]
+                  }
                   alt=""
                 />
               )}
