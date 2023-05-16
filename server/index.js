@@ -130,7 +130,7 @@ app.post("/logout", (req, res) => {
 });
 
 const cloudinaryImageUploadMethod = async (file) => {
-  return new Promise((resolve) => {
+  return await new Promise((resolve) => {
     cloudinary.uploader.upload(file, (err, res) => {
       if (err) return res.status(500).send("upload image error");
       resolve(res.secure_url);
@@ -149,7 +149,7 @@ app.post("/upload-by-link", async (req, res) => {
     const url = await cloudinaryImageUploadMethod(
       __dirname + "/tmp/" + newName
     );
-    // console.log(url);
+    console.log(url);
     res.json(url);
   } catch (error) {
     res.status(500).send("invalid image url");
@@ -161,7 +161,7 @@ app.post("/upload", photosMiddleware.array("photos", 10), async (req, res) => {
   const uploadedFiles = [];
   for (let i = 0; i < req.files.length; i++) {
     const { path } = req.files[i];
-    // console.log(path);
+    console.log(path);
     const url = await cloudinaryImageUploadMethod(path);
 
     uploadedFiles.push(url);
@@ -387,35 +387,45 @@ wss.on("connection", (connection, req) => {
     // console.log(messageData);
     const { recipient, text, file } = messageData;
     let filename = null;
+    let url = null;
+    let path = null;
     if (file) {
+      // console.log(file.name);
+      // const url = await cloudinaryImageUploadMethod(file.name);
       // console.log({ file });
-      console.log("size", file.data.length);
+      // console.log("size", file.data.length);
       const parts = file.name.split(".");
       const extension = parts[parts.length - 1]; // get last part, which contains the file extension
       filename = Date.now() + "." + extension;
-      const path = __dirname + "/uploads/" + filename;
+      path = __dirname + "/uploads/" + filename;
       const bufferData = new Buffer(file.data.split(",")[1], "base64"); // read content from file.data, which is base64 encoded, so we need to decode it
+      // console.log(path);
+
       fs.writeFile(path, bufferData, () => {
         console.log("file saved: " + path);
       });
+      url = await cloudinaryImageUploadMethod(path);
     }
-    if (recipient && (text || file)) {
+    if (text || file) {
+      // if (file) {
+      //   console.log(url);
+      // }
       const messageDoc = await Message.create({
         // create new message in database
         sender: connection.id,
         recipient,
         text,
-        file: file ? filename : null,
+        file: file ? url : null,
       });
       [...wss.clients]
-        .filter((c) => c.id === recipient) // don't use find b/c it only finds one client. a user may be connected on multiple devices, so we want to find all of those connections
+        .filter((c) => c.id === recipient || c.id === connection.id) // don't use find b/c it only finds one client. a user may be connected on multiple devices, so we want to find all of those connections
         .forEach((c) =>
           c.send(
             JSON.stringify({
               text,
               sender: connection.id,
               recipient,
-              file: file ? filename : null, // need this to work on firefox
+              file: file ? url : null, // need this to work on firefox
               _id: messageDoc._id,
             })
           )

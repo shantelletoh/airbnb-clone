@@ -51,7 +51,10 @@ export default function Messages() {
     } else if ("text" in messageData) {
       // console.log("sender: ");
       // console.log(user._id);
-      if (messageData.sender === selectedUserId) {
+      if (
+        messageData.sender === selectedUserId ||
+        messageData.sender === user._id
+      ) {
         // display messages sent by other user
         setMessages((prev) => [...prev, { ...messageData }]);
       }
@@ -79,23 +82,23 @@ export default function Messages() {
     );
     setNewMessageText("");
 
-    if (file) {
-      // need to reload messages if send file b/c latest message has url of the file
-      axios.get("/messages/" + selectedUserId).then((res) => {
-        setMessages(res.data);
-      });
-    } else {
-      // display messages sent by our user
-      setMessages((prev) => [
-        ...prev,
-        {
-          text: newMessageText,
-          sender: user._id,
-          recipient: selectedUserId,
-          _id: Date.now(), // give a sender id
-        },
-      ]);
-    }
+    // if (file) {
+    //   // need to reload messages if send file b/c latest message has url of the file
+    //   axios.get("/messages/" + selectedUserId).then((res) => {
+    //     setMessages(res.data);
+    //   });
+    // } else {
+    //   // display messages sent by our user
+    //   setMessages((prev) => [
+    //     ...prev,
+    //     {
+    //       text: newMessageText,
+    //       sender: user._id,
+    //       recipient: selectedUserId,
+    //       _id: Date.now(), // give a sender id
+    //     },
+    //   ]);
+    // }
   }
 
   function sendFile(e) {
@@ -213,9 +216,11 @@ export default function Messages() {
                             target="_blank" // open link in new tab
                             className="flex items-center gap-1 border-b"
                             href={
-                              axios.defaults.baseURL +
-                              "/uploads/" +
-                              message.file
+                              message.file.includes("https://")
+                                ? message.file
+                                : axios.defaults.baseURL +
+                                  "/uploads/" +
+                                  message.file
                             }
                           >
                             <svg
