@@ -34,7 +34,7 @@ app.use(
   })
 );
 
-mongoose.connect(process.env.MONGO_URL);
+// mongoose.connect(process.env.MONGO_URL); // to deploy, need to connect to db in every endpoint instead
 
 function getUserDataFromReq(req) {
   return new Promise((resolve, reject) => {
@@ -51,11 +51,13 @@ function getUserDataFromReq(req) {
 }
 
 app.get("/test", (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   res.json("test ok");
 });
 
 // fetch all messages
 app.get("/messages/:id", async (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   // res.json(req.params);
   const { id } = req.params;
   const userData = await getUserDataFromReq(req);
@@ -70,11 +72,13 @@ app.get("/messages/:id", async (req, res) => {
 });
 
 app.get("/people", async (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   const users = await User.find({}, { _id: true, name: true });
   res.json(users);
 });
 
 app.post("/register", async (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   const { name, email, password } = req.body;
 
   try {
@@ -90,6 +94,7 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   const { email, password } = req.body;
   const userDoc = await User.findOne({ email });
   if (userDoc) {
@@ -113,6 +118,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/profile", (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   const { token } = req.cookies;
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, {}, async (error, userData) => {
@@ -139,6 +145,7 @@ const cloudinaryImageUploadMethod = async (file) => {
 };
 
 app.post("/upload-by-link", async (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   try {
     const { link } = req.body;
     const newName = "photo" + Date.now() + ".jpg";
@@ -172,6 +179,7 @@ app.post("/upload", photosMiddleware.array("photos", 10), async (req, res) => {
 });
 
 app.post("/places", (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   const { token } = req.cookies;
   const {
     title,
@@ -206,6 +214,7 @@ app.post("/places", (req, res) => {
 
 // get all current user's places
 app.get("/user-places", (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   const { token } = req.cookies;
   jwt.verify(token, process.env.JWT_SECRET, {}, async (error, userData) => {
     // userData is the decrypted token
@@ -216,6 +225,7 @@ app.get("/user-places", (req, res) => {
 
 // get place information
 app.get("/places/:id", async (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   // res.json(req.params);
   const { id } = req.params;
   res.json(await Place.findById(id));
@@ -223,6 +233,7 @@ app.get("/places/:id", async (req, res) => {
 
 // edit/update places
 app.put("/places", async (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   const { token } = req.cookies;
   const {
     id,
@@ -262,6 +273,7 @@ app.put("/places", async (req, res) => {
 
 // get all places with query and filter perks functionalities
 app.get("/places", async (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   try {
     const search = req.query.search || "";
     let perks = req.query.perks || "All";
@@ -290,6 +302,7 @@ app.get("/places", async (req, res) => {
 
 // book a place
 app.post("/bookings", async (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   const userData = await getUserDataFromReq(req);
   const { place, checkIn, checkOut, numberOfGuests, name, phone, price } =
     req.body;
@@ -312,6 +325,7 @@ app.post("/bookings", async (req, res) => {
 });
 
 app.get("/bookings", async (req, res) => {
+  mongoose.connect(process.env.MONGO_URL);
   const userData = await getUserDataFromReq(req);
   res.json(await Booking.find({ user: userData.id }).populate("place"));
 });
@@ -322,6 +336,7 @@ const server = app.listen(5000, () => {
 
 const wss = new ws.WebSocketServer({ server }); // create a WebSocket server
 wss.on("connection", (connection, req) => {
+  mongoose.connect(process.env.MONGO_URL);
   function notifyAboutOnlinePeople() {
     // [...wss.clients].length // gives number of connections
     // console.log([...wss.clients].map(c => c.username));
