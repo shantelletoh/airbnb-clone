@@ -13,7 +13,8 @@ export default function PlacesList({ places }) {
                   src={
                     place.photos?.[0] && place.photos?.[0].includes("https://")
                       ? place.photos?.[0]
-                      : "http://localhost:5000/uploads/" + place.photos?.[0]
+                      : "https://shantelle-booking-app.onrender.com/uploads/" +
+                        place.photos?.[0]
                   }
                   alt=""
                 />

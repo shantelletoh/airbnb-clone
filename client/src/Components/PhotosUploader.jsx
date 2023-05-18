@@ -77,7 +77,8 @@ export default function PhotosUploader({ addedPhotos, onChange }) {
                 src={
                   link && link.includes("https://")
                     ? link
-                    : "http://localhost:5000/uploads/" + link
+                    : "https://shantelle-booking-app.onrender.com/uploads/" +
+                      link
                 }
               />
               <button

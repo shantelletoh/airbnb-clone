@@ -11,7 +11,8 @@ export default function PlaceImg({ place, index = 0, className = null }) {
       src={
         place.photos[index] && place.photos[index].includes("https://")
           ? place.photos[index]
-          : "http://localhost:5000/uploads/" + place.photos[index]
+          : "https://shantelle-booking-app.onrender.com/uploads/" +
+            place.photos[index]
       }
       alt=""
     />

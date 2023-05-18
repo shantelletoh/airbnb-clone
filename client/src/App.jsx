@@ -14,7 +14,7 @@ import BookingsPage from "./pages/BookingsPage";
 import BookingPage from "./pages/BookingPage";
 import Messenger from "./pages/Messenger";
 
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "https://shantelle-booking-app.onrender.com";
 axios.defaults.withCredentials = true;
 
 function App() {

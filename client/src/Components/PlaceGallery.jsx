@@ -5,7 +5,7 @@ export default function PlaceGallery({ place }) {
     url:
       photo && photo.includes("https://")
         ? photo
-        : "http://localhost:5000/uploads/" + photo,
+        : "https://shantelle-booking-app.onrender.com/uploads/" + photo,
   }));
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -138,7 +138,7 @@ export default function PlaceGallery({ place }) {
                     place.photos[fullImageIndex] &&
                     place.photos[fullImageIndex].includes("https://")
                       ? place.photos[fullImageIndex]
-                      : "http://localhost:5000/uploads/" +
+                      : "https://shantelle-booking-app.onrender.com/uploads/" +
                         place.photos[fullImageIndex]
                   }
                   alt=""
