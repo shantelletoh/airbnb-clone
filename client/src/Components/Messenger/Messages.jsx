@@ -21,7 +21,7 @@ export default function Messages() {
   }, [selectedUserId]);
 
   function connectToWs() {
-    const ws = new WebSocket("ws://shantelle-booking-app.onrender.com");
+    const ws = new WebSocket("wss://shantelle-booking-app.onrender.com");
     setWs(ws);
     // things that should happen when we receive a message
     ws.addEventListener("message", handleMessage);
