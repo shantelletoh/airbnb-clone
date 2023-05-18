@@ -22,7 +22,7 @@ export default function PlacePage() {
   }, [id]);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:5000");
+    const ws = new WebSocket("ws://shantelle-booking-app.onrender.com");
     setWs(ws);
     // things that should happen when we receive a message
     ws.addEventListener("message", handleMessage);
