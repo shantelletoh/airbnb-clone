@@ -30,7 +30,7 @@ app.use("/uploads", express.static(__dirname + "/uploads")); // everything in up
 app.use(
   cors({
     credentials: true,
-    origin: "https://aesthetic-tapioca-da80cb.netlify.app",
+    origin: "https://shantelle-booking-app.netlify.app",
   })
 );
 
