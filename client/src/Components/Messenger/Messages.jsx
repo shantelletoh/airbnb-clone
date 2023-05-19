@@ -147,6 +147,12 @@ export default function Messages() {
     }
   }, [selectedUserId]);
 
+  const { ready } = useContext(UserContext);
+
+  if (!ready) {
+    return "Loading...";
+  }
+
   return (
     <div className="flex h-[85vh] mt-5">
       <div className="bg-white w-1/3 flex flex-col">
